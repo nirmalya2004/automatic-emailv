@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Validation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        input[type="email"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #error {
+            margin-top: 10px;
+            font-size: 14px;
+            color: red;
+            display: none;
+        }
+        #validFormat {
+            margin-top: 10px;
+            font-size: 14px;
+            color: green;
+            display: none;
+        }
+        .checkbox-label {
+            display: block;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Email Validation</h1>
+        <input type="email" id="email" placeholder="Enter your email address">
+        <div id="checkboxes">
+            <label class="checkbox-label"><input type="checkbox" id="containsAt"> Contains '@' symbol</label>
+            <label class="checkbox-label"><input type="checkbox" id="containsDot"> Contains '.' symbol</label>
+            <label class="checkbox-label"><input type="checkbox" id="validLength"> Has a valid length (at least 5 characters)</label>
+        </div>
+        <button id="validateButton">Validate Email</button>
+        <p id="result"></p>
+        <p id="error"></p>
+        <p id="validFormat">Valid email format</p>
+    </div>
+
+    <script>
+        const emailInput = document.getElementById('email');
+        const validateButton = document.getElementById('validateButton');
+        const resultMessage = document.getElementById('result');
+        const errorMessage = document.getElementById('error');
+        const validFormatMessage = document.getElementById('validFormat');
+        const containsAtCheckbox = document.getElementById('containsAt');
+        const containsDotCheckbox = document.getElementById('containsDot');
+        const validLengthCheckbox = document.getElementById('validLength');
+
+        const emailRegex = /^[a-z0-9]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+
+        emailInput.addEventListener('input', function() {
+            const email = emailInput.value.trim();
+
+            if (email === '') {
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Please enter an email address.';
+                validFormatMessage.style.display = 'none';
+                resultMessage.textContent = '';
+                resetCheckboxes();
+                return;
+            }
+
+            if (!emailRegex.test(email)) {
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Please enter a valid email address.';
+                validFormatMessage.style.display = 'none';
+                resultMessage.textContent = '';
+                resetCheckboxes();
+                return;
+            }
+
+            // Update checkboxes
+            containsAtCheckbox.checked = email.includes('@');
+            containsDotCheckbox.checked = email.includes('.');
+            validLengthCheckbox.checked = email.length >= 5;
+
+            errorMessage.style.display = 'none';
+            validFormatMessage.style.display = 'block';
+            resultMessage.textContent = 'Email is valid: ' + email;
+        });
+
+        function resetCheckboxes() {
+            containsAtCheckbox.checked = false;
+            containsDotCheckbox.checked = false;
+            validLengthCheckbox.checked = false;
+        }
+    </script>
+</body>
+</html>
