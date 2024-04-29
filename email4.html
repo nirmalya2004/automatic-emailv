@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Validator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: linear-gradient(to bottom right, #59C0FF, #A9E7FF);
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+        input[type="email"] {
+            padding: 12px;
+            margin-bottom: 20px;
+            width: calc(100% - 24px);
+            box-sizing: border-box;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="email"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #error {
+            margin-top: 10px;
+            font-size: 14px;
+            color: red;
+            display: none;
+        }
+        #validFormat {
+            margin-top: 10px;
+            font-size: 14px;
+            color: green;
+            display: none;
+        }
+        .reason {
+            margin-top: 10px;
+            font-size: 14px;
+            color: red;
+            text-align: left;
+            padding-left: 20px;
+            position: relative;
+        }
+        .reason:before {
+            content: "✖";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: red;
+        }
+        .reason.valid {
+            color: green;
+        }
+        .reason.valid:before {
+            content: "✔";
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Email Validator</h1>
+        <input type="email" id="email" placeholder="Enter your email address">
+        <div id="reasons"></div>
+        <button id="validateBtn">Validate</button>
+        <p id="error"></p>
+        <p id="validFormat">Valid email format</p>
+    </div>
+
+    <script>
+        const emailInput = document.getElementById('email');
+        const errorMessage = document.getElementById('error');
+        const validFormatMessage = document.getElementById('validFormat');
+        const reasonsDiv = document.getElementById('reasons');
+        const validateBtn = document.getElementById('validateBtn');
+
+        const emailRegex = /^[a-z0-9._%+-]+@[a-z]+\.[a-z]{2,}$/;
+
+        validateBtn.addEventListener('click', function() {
+            const email = emailInput.value.trim();
+
+            if (email === '') {
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Please enter an email address.';
+                validFormatMessage.style.display = 'none';
+                clearReasons();
+                return;
+            }
+
+            if (!emailRegex.test(email)) {
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Invalid Email Format';
+                validFormatMessage.style.display = 'none';
+                clearReasons();
+                return;
+            } 
+
+            errorMessage.style.display = 'none';
+            validFormatMessage.style.display = 'block';
+            validFormatMessage.textContent = 'Email is valid: ' + email;
+        });
+
+        function clearReasons() {
+            reasonsDiv.innerHTML = ''; // Clear previous reasons
+
+            const email = emailInput.value.trim();
+
+            const containsAt = email.includes('@');
+            const containsDot = email.includes('.');
+            const validLength = email.length >= 5;
+            const noCapitalLetters = !/[A-Z]/.test(email);
+
+            if (!containsAt) {
+                createReasonElement("Missing '@' symbol");
+            } else {
+                createReasonElement("Contains '@' symbol", true);
+            }
+            if (!containsDot) {
+                createReasonElement("Missing valid domain");
+            } else {
+                createReasonElement("Contains valid domain", true);
+            }
+            if (!validLength) {
+                createReasonElement("Invalid length (at least 5 characters)");
+            } else {
+                createReasonElement("Has valid length", true);
+            }
+            if (!noCapitalLetters) {
+                createReasonElement("Contains No capital letters");
+            } else {
+                createReasonElement("No capital letters", true);
+            }
+        }
+
+        function createReasonElement(reason, isValid = false) {
+            const reasonElement = document.createElement('p');
+            reasonElement.classList.add('reason');
+            if (isValid) {
+                reasonElement.classList.add('valid');
+            }
+            reasonElement.textContent = reason;
+            reasonsDiv.appendChild(reasonElement);
+        }
+    </script>
+</body>
+</html>
